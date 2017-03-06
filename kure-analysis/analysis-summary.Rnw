@@ -1,0 +1,259 @@
+\documentclass{article}
+
+\usepackage[margin=0.5in]{geometry}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage[font=small, justification=justified, singlelinecheck=false]{caption}
+%\usepackage{graphicx}
+\usepackage{booktabs}
+
+\usepackage{hyperref}
+\hypersetup{
+    colorlinks,
+    citecolor=green,
+    filecolor=black,
+    linkcolor=blue,
+    urlcolor=red
+    }
+    
+%in the preamble
+%--------------------------------
+
+\usepackage[natbib=true, sorting=none, style=numeric, backend=bibtex]{biblatex}
+
+\addbibresource{lit.bib}
+%--------------------------------
+ 
+
+\title{Documentation of analysis for AHA abstract currently titled, "Lipid-related genetic variants and lipid outcomes in a cohort of Chilean children (SLCS)"}
+\author{Ann Von Holle}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+ 
+\tableofcontents
+
+\section{Statistical Analysis Plan} \label{sap}
+
+All analyses below are according to the plan at \url{https://avonholle.github.io/ms-201608-1/StatisticalAnalysisPlan.html}.
+
+\\
+
+\textbf{Note:} See the SAP for more detail on variant selection, power, etc..
+
+%\newpage  % need to move all content to next page so table 1 doesn't float to next apge.
+
+% -------------------------------------------------------
+% Load all R code here ------------------------------------
+% -------------------------------------------------------
+
+<<makedata1, cache=FALSE, echo=FALSE>>=
+read_chunk('create-dat1.R') # table1 and table1-print sections
+@
+
+<<dhandle, cache=F, echo=FALSE>>=
+read_chunk('a1.R') # datahandle section
+@
+
+<<ptable1, cache=F, echo=FALSE>>=
+read_chunk('table1.R') # table1 and table1-results sections
+@
+
+<<ptable2, cache=F, echo=FALSE>>=
+read_chunk('a2.R') # table2 and table2-results sections
+@
+
+<<ptable3, cache=F, echo=FALSE>>=
+read_chunk('a3.R') # table3 and table3-results sections
+@
+
+<<ptable4, cache=F, echo=FALSE>>=
+read_chunk('a4.R') # table4 and table4-results and table4-descriptive section
+@
+
+<<check-snp, cache=F, echo=FALSE>>=
+read_chunk('check-scores-no-id.R') # checksnp and checksnp-table sections
+@
+
+% -----------------------------------------------------
+% show results -------------------------
+% -----------------------------------------------------
+
+\section{Table 1}
+
+<<table1, echo=FALSE, results='hide', message=FALSE, warning=FALSE>>=
+@
+
+<<table1-print, echo=FALSE, results='asis', message=FALSE>>=
+@
+
+\subsection{Extra descriptive detail for sample data}
+
+<<table1extra, echo=FALSE,  message=FALSE>>=
+@
+
+
+\subsection{Tikkanen results \cite{tikkanen_association_2011} (snapshot from paper)}
+
+\begin{figure}[h]
+\includegraphics[scale=0.5]{tikk-table1.png}
+\end{figure}
+
+\section{Table 2 results}
+
+These SNPS were selected a priori according to the power section in the statistical analysis plan listed in the section \ref{sap} above.
+
+Note: All models adjusted for first five PC representing ancestry.
+
+\subsection{HDL individual association tests}
+
+Notes: Using the additive effect test the \textbf{rs3764261} snp is significant (p=7.3e-05) and \textbf{rs1532085} is not significant (p $=$ 0.17).
+
+In the Tikkanen paper \cite{tikkanen_association_2011}
+
+\captionsetup{labelformat=empty}
+
+<<table2-results-1, echo=FALSE, message=FALSE>>=
+@
+
+\subsection{LDL individual association tests}
+
+Notes: Using the additive effect test the \textbf{rs6511720} snp is not significant (p $>$ 0.93).
+
+<<table2-results-2, echo=FALSE, message=FALSE>>=
+@
+
+\subsection{TG individual association tests}
+
+Notes: Using an additive test both the \textbf{rs1260326} and \textbf{rs964184} snps are significant (p=0.016 and 0.028, respectively).
+
+<<table2-results-3, echo=FALSE, message=FALSE>>=
+@
+
+\subsection{TC individual association tests}
+
+Notes: Using an additive test the \textbf{rs6511720} snp was not significant (p=0.45)
+
+<<table2-results-4, echo=FALSE, message=FALSE>>=
+@
+
+
+\section{Table 3 results}
+
+Proportion of variance explained by selected SNPS.
+
+<<table3-results, echo=F, results='asis', message=FALSE>>=
+@
+
+\vspace{5mm} %5mm vertical space
+
+\textbf{Note}: the largest differences between these results and Tikkanen is the LDL (lower proportions for males and females in this sample) and TG (lower proportion for males). Males in this sample also show a higher proportion of variance explained for HDL than the Tikkanen sample.
+
+\subsection{Tikkanen results \cite{tikkanen_association_2011} (snapshot from paper)}
+
+\begin{figure}[h]
+\includegraphics[scale=0.65]{tikk-table2-h2.png}
+\end{figure}
+
+\section{Table 4 results}
+
+Note: The polygenic risk score is derived from the Buscot 2016 paper \cite{buscot_combined_2016}, which relies on variants found in the Teslovich 2010 paper \cite{teslovich_biological_2010}. I started with the Tikkanen 2011 \cite{tikkanen_association_2011} paper, but the Buscot paper reduces the number of snps,'To avoid redundancy and overlap of genetic information, in each lipid wGRS, we chose to include only the SNPs with which it showed the strongest independent associations among the 3 lipid traits in the meta-analysis' \cite{buscot_combined_2016}. More detail available in statistical analysis plan (in section \ref{sap}).
+
+% run code here so results show up below.
+<<table4, results='hide', echo=FALSE, warning=FALSE, message=FALSE>>=
+@
+
+\subsection{Coefficient (se)}
+<<table4-results1, echo=F, results='asis', message=FALSE>>=
+@
+
+\vspace{5mm} %5mm vertical space
+
+Note: All models adjusted for first five PC representing ancestry.
+
+\textbf{Note:} The effect sizes here are given for a one unit SD increase in the GRS. The results given in the Tikkanen paper are given for a one unit change in the standard deviation of the GRS.
+
+\vspace{5mm} %5mm vertical space
+
+\subsection{p-values}
+<<table4-results2, echo=F, results='asis', message=FALSE>>=
+@
+
+\subsection{Descriptive statistics for the risk scores}
+
+<<table4-descriptive, echo=F, results='asis', message=F>>=
+@
+
+\vspace{5mm} %5mm vertical space
+
+\textbf{Note:} The genetic risk score medians are very similar to the means listed in the table of Buscot results below.
+
+\subsection{Buscot results \cite{buscot_combined_2016} (snapshot from paper)}
+
+\begin{figure}[H]
+\includegraphics[scale=0.4]{table1-buscot-grs.png}
+\end{figure}
+
+\subsection{Tikkanen results \cite{tikkanen_association_2011} (snapshot from paper)}
+
+\begin{figure}[H]
+\includegraphics[scale=0.5]{fig3-tikk-grs.png}
+\end{figure}
+
+% show code used to get results here -- omitting any results in case it contains ids -----------------------------
+
+\section{Code}
+
+\subsection{Descriptive statistics for sample}
+
+<<table1, echo=T, results='hide'>>=
+@
+
+\subsection{Create data set for analysis using GenABEL package in R}
+
+Make a data file reading in plink .bed and .fam files from Anne Justice
+
+<<createdat1, results='hide'>>=
+@
+
+\subsection{More data handling}
+
+<<datahandle, results='hide'>>=
+@
+
+\subsection{Table 2 data analysis}
+
+<<table2, results='hide'>>=
+@
+
+\subsection{Table 3 data analysis}
+<<table3, results='hide'>>=
+@
+
+\subsection{Table 4 data analysis}
+<<table4, results='hide'>>=
+@
+
+\subsection{Check coding of SNPS in analyses}
+<<checksnp, results='hide', warning=F>>=
+@
+
+\section{Appendix}
+
+\subsection{Table 2: Check SNPS used in regression}
+
+<<table3-check, warning=FALSE>>=
+@
+
+\subsection{Check coding of SNPS in analyses}
+
+<<checksnp-table, results='asis', echo=F>>=
+@
+
+\printbibliography
+
+\end{document}

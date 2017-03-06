@@ -1,0 +1,125 @@
+---
+title: "list of lipid SNPs for analyses"
+author: "Ann Von Holle"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+bibliography: lit.bib
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+    number_sections: true
+---
+
+# List of SNPS
+
+[Available in csv file here](https://avonholle.github.io/ms-201608-1/lipid-snps.txt)
+
+
+# Code to read data from supplentary material and make txt file
+
+This list is made from files copied from supplementary material in the Buscot 2016 paper [@buscot_combined_2016]. Lipid variants they use are listed in document titled, 'journal.pone.0146081.s007'.
+
+```{r, echo=T, results='hide'}
+
+# read data I copied from word doc into txt files
+hdl = read.table('hdl-snps.txt', header=T)
+ldl = read.table('ldl-snps.txt', header=T)
+tg = read.table('tg-snps.txt', header=T)
+
+hdl$trait = "hdl"
+ldl$trait = "ldl"
+tg$trait = "tg"
+
+# combine ldl, hdl and tg into one data frame
+  
+lipid = rbind(ldl, hdl, tg)
+
+# take off last two char of string for snp
+lipid = within(lipid, {
+  snp2 = substr(snp, 1, nchar(as.character(snp))-2)
+  effect.allele = substr(snp, nchar(as.character(snp)), nchar(as.character(snp)))
+  }
+)
+
+write.csv(lipid, file="lipid-snps.csv")
+
+```
+
+
+# GRS formula for HDL-C
+
+## List of SNPS used for HDL-C
+
+```{r}
+  lipid[lipid$trait=="hdl",]
+```
+
+## Formula for the weighted genetic risk score for each beta
+
+```{r}
+with(hdl, paste(beta, "*", substr(as.character(snp),1,nchar(as.character(snp))-2), collapse = " + ")) # formula for tg grs
+
+sum(hdl$beta) # denominator for risk score
+```
+
+## formula for sum of variants to produce explained variance
+
+```{r}
+beta.vec = paste0("b", seq(1,length(hdl$snp)))
+with(hdl, paste(beta.vec, "*", substr(as.character(snp),1,nchar(as.character(snp))-2), collapse = " + ")) # plain sum
+```
+
+---
+
+
+# GRS formula for LDL-C
+
+## List of SNPS used for LDL-C
+
+```{r}
+  lipid[lipid$trait=='ldl',]
+```
+
+## Formula for the weighted genetic risk score for each beta
+
+```{r}
+with(ldl, paste(beta, "*", substr(as.character(snp),1,nchar(as.character(snp))-2), collapse = " + ")) # formula for tg grs
+
+
+sum(ldl$beta) # denominator for risk score
+```
+
+## formula for sum of variants to produce explained variance
+
+```{r}
+beta.vec = paste0("b", seq(1,length(ldl$snp)))
+with(ldl, paste(beta.vec, "*", substr(as.character(snp),1,nchar(as.character(snp))-2), collapse = " + ")) # plain sum
+```
+
+---
+
+# GRS formula for TG
+
+## List of SNPS used for TG
+
+```{r}
+    lipid[lipid$trait=='tg',]
+```
+
+## Formula for the weighted genetic risk score for each beta
+
+```{r}
+with(tg, paste(beta, "*", substr(as.character(snp),1,nchar(as.character(snp))-2), collapse = " + ")) # formula for tg grs
+
+
+sum(tg$beta) # denominator for risk score
+```
+
+## formula for sum of variants to produce explained variance
+
+```{r}
+beta.vec = paste0("b", seq(1,length(tg$snp)))
+with(tg, paste(beta.vec, "*", substr(as.character(snp),1,nchar(as.character(snp))-2), collapse = " + ")) # plain sum
+```
+
+# References

@@ -1,0 +1,89 @@
+---
+title: "ID issues for SLCS genetic and phenotype data"
+author: "Ann Von Holle"
+date: '`r format(Sys.time(), "%d %B, %Y")`'
+output: 
+  html_document:
+    toc: yes
+    toc_float: yes
+    number_sections: true
+---
+
+# ID crosswalk: from IDsToMatch.txt file
+
+      - tubodna = phenotype file id I have from 2014 file?
+      - fid: genetic data id, family id?
+      - iid: genetic data id, individual id?
+      - id: nih id?
+
+```{r}
+# file with ids to match with phenotype data id
+#setwd("C:/Users/vonholle/Dropbox/unc.grad.school/my-papers/ms-201608-1/programs/kure-analysis")
+
+ids = read.csv("IDsToMatch.csv", header=T)
+head(ids)
+
+# extract out digits from the tubodna id so I can merge the crosswalk id file to my phenotype file
+colnames(ids) = tolower(colnames(ids))
+head(ids)
+
+new.ids = do.call('rbind', strsplit(as.character(ids$tubodna),'-',fixed=TRUE))
+#ids$id_v1 = as.numeric(new.ids[,2])
+ids$id_v1 = ids$id
+head(ids)
+```
+
+## complete list of the id variable
+
+```{r}
+ids$id
+```
+
+# IDS from 2014 phenotype data release (data I used from 2014/2015 AHA epid718 project)
+
+```{r}
+# Get phenotype data file
+phen = read.csv("slcs-lipid-phen-2016.csv")
+colnames(phen) = tolower(colnames(phen))
+head(phen)
+```
+
+## complete list of ids in 2014 phenotype file
+```{r}
+  phen$id_v1
+```
+
+## number of people in my phenotype file is 888
+```{r}
+nrow(phen)
+```
+
+## number of people in crosswalk file is 896
+```{r}
+nrow(ids)
+```
+
+## When you merge the ids from the crosswalk file to the ids in the phenotype file I only get 589 matches
+
+```{r}
+# merge new.id onto the phenotype file
+phen.2a = merge(phen, ids, by="id_v1")
+nrow(phen.2a)
+head(phen.2a)
+```
+
+## Within this group of 589 there are 546 rows with at least one non-missing lipid value.
+
+```{r}
+
+# determine how many rows with any non-missing lipid data
+phen.2a$miss.lip = apply(phen.2a[colnames(phen.2a) %in% c("a_tg",
+                                                       "a_ldlc",
+                                                       "a_hdlc")],
+                        1, anyNA) # go through each row and indicate if any values are non-missing
+head(phen.2a)
+summary(phen.2a$miss.lip) # only 21 rows have some non-missing lipid data
+```
+
+
+

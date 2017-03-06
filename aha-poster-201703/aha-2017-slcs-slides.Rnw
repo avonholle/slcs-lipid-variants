@@ -1,0 +1,399 @@
+% ser-2017-aha-slcs.Rnw
+
+%---------------------------------------------------------------
+% Preamble
+% --------------------------------------------------------------
+%
+% NOTE: See rice-sample.tex written by Daina Chiba at Rice University for formatting and preamble code that I copied, http://ricebeamer.dynaman.net/
+\documentclass[pdf]{beamer}
+
+\usetheme{Frankfurt}
+\usecolortheme{beetle}
+\setbeamersize{text margin left=10pt,text margin right=10pt} %set margin sizes
+
+
+\usepackage[english]{babel}
+\usepackage[latin1]{inputenc}
+\usepackage{bm}
+\usepackage{blindtext}
+\usepackage{scrextend}
+\addtokomafont{labelinglabel}{\sffamily}
+\usepackage{csquotes}
+\usepackage{booktabs}
+
+\usepackage{graphicx}% http://ctan.org/pkg/graphicx
+
+\setbeamercolor{bibliography entry title}{fg=black,bg=black}% see http://tex.stackexchange.com/questions/71352/beamer-undefined-color-local-structure
+\setbeamercolor{bibliography entry location}{fg=white}
+\setbeamercolor{bibliography entry note}{fg=white}
+\setbeamertemplate{caption}[numbered]
+
+% got from http://tex.stackexchange.com/questions/48023/mimic-bibtex-apalike-with-biblatex-biblatex-apa-broken
+\PassOptionsToPackage{
+        style=numeric,
+        hyperref=true,
+        backend=bibtex,
+        maxbibnames=1,
+        firstinits=true,
+        uniquename=init,
+        maxcitenames=2,
+        parentracker=true,
+        url=false,
+        doi=true,
+        isbn=false,
+        eprint=false,
+        backref=false,
+            }{biblatex}
+% see the following link for info on biblatex sort order issue: 
+% http://tex.stackexchange.com/questions/51434/biblatex-citation-order
+\usepackage[natbib=true, sorting=none, style=numeric, backend=biber]{biblatex}
+\addbibresource{lit}
+\renewcommand*{\bibfont}{\scriptsize}
+
+
+% see http://tex.stackexchange.com/questions/43083/author-year-abbr-journal-name-as-citation-style
+\DeclareCiteCommand{\longcite}{(}{%
+    \printnames[author]{author}, \printfield{year})}{}{}%
+
+\newcommand{\customcite}[1]{\citeauthor{#1}, \citetitle{#1}, \citeyear{#1}}
+\newcommand{\customcitetwo}[1]{\citeauthor{#1}, \citeyear{#1}}
+
+\renewcommand{\footnotesize}{\tiny}  % change font size of citation
+\renewcommand\multicitedelim{\addsemicolon\space} % This doesn't seem to work, but see http://tex.stackexchange.com/questions/167665/multiple-references-with-footfullcite
+
+
+
+%\usepackage{fontspec} % have to compile with XeLaTeX
+%\setmainfont{Arial}
+\usepackage[T1]{fontenc}
+\usepackage{helvet}
+\renewcommand{\familydefault}{\sfdefault} % get something like Arial
+
+\usepackage{amsmath,amsthm, amssymb, latexsym}
+\usepackage{wrapfig}
+
+\usepackage{array,booktabs,tabularx}
+\newcolumntype{Z}{>{\centering\arraybackslash}X} % centered tabularx columns
+
+\usepackage[shortlabels]{enumitem}
+
+% \setlist[description]{style=nextline}
+\setlist[itemize]{label=$\bullet$}
+
+\usepackage[framemethod=TikZ]{mdframed}
+\mdfdefinestyle{MyFrame}{%
+    linecolor=carolinablue,
+    outerlinewidth=4pt,
+    roundcorner=20pt,
+    innerrightmargin=20pt,
+    innerleftmargin=20pt,
+    backgroundcolor=carolinablue!20}
+    
+% comment 
+\newcommand{\comment}[1]{}
+
+% (relative) path to the figures
+%\graphicspath{{figs/}}
+
+
+<<mainSettings, echo=FALSE, include=FALSE>>=
+
+library(knitr)
+library(data.table)
+library(readxl)
+library(ggplot2)
+library(plyr)
+library(ztable)
+opts_chunk$set(echo=FALSE, comment=NA, message=FALSE, results='asis', cache=F)
+opts_knit$set(root.dir="../slides")
+@
+
+% This is based on the template at http://www-i6.informatik.rwth-aachen.de/~dreuw/latexbeamerposter.php
+
+% --------------------------------------------------------------------------------------% 
+% Title, author, date, etc.
+% --------------------------------------------------------------------------------------% 
+% see http://tex.stackexchange.com/questions/9740/how-can-i-add-vertical-space-to-a-beamercolorbox-to-make-it-align-with-another-o
+\title{Lipid-related Genetic Variants and Lipid Outcomes in a Cohort of Chilean Children} 
+\author[vonholle@unc.edu]{Ann Von Holle, Anne Justice, Misa Graff, Kari North, UNC, Chapel Hill, NC; Estela Blanco, Sheila Gahagan, UCSD, San Diego, CA; B\'arbara Angel, Unidad de Nutrici\'on P\'ublica INTA, Univ de Chile, Santiago, Chile; Jos\'e Luis Santos, Pontificia Univ Cat\'olica de Chile, Santiago, Chile}
+\institute{UNC}
+%\titlegraphic{unc-logo.png} %this is the path to your logo
+
+% -------------------------------------------------------------------------------------%
+% Contents
+% -------------------------------------------------------------------------------------%
+
+\begin{document}
+
+\begin{frame}
+\titlepage
+\centering
+\end{frame}
+
+\section{Introduction}
+\subsection{Introduction}
+
+\begin{frame}{Introduction}
+
+Lipid concentrations:
+        
+          \begin{itemize}
+                \begin{itemize} \normalsize
+                    \item Are a recognized heritable risk factor for cardiovascular disease (CVD)
+                    \item Associate with >150 loci in adults
+                    \item Vary across ancestral groups
+                    \item Include high density lipoprotein cholesterol (HDL-C), low density lipoprotein cholesterol (LDL-C) and triglycerides (TG).
+                    \end{itemize}
+            \end{itemize}
+    
+\end{frame}
+
+
+\begin{frame}{Introduction}
+
+                \begin{itemize} \normalsize
+                  \item Genetic architecture underlying lipid traits is similar across ancestral groups for adults.\footfullcite{coram_genome-wide_2013-1}
+      
+                  \item Unclear if lipid-related loci associations found in adults extend to younger age groups. 
+                    \begin{itemize}
+                      \item One European study establishes continuity of associations across the age spectrum\footfullcite{tikkanen_association_2011}, but no evidence exists in Hispanic/Latino populations.
+                      \end{itemize}
+            \end{itemize}
+    
+\end{frame}
+
+% ------------------------------
+
+\section{Aims}
+\subsection{Aims}
+
+\begin{frame}{Aims}
+        \begin{description}
+            \item[Aim 1] Estimate association between lipid risk variants first identified in adults and adolescent lipid traits from Santiago Longitudinal Cohort Study (SLCS), a Chilean infancy cohort\footfullcite{lozoff_behavioral_2003}.
+            \item[Aim 2] Compare results between SLCS and Cardiovascular Risk in Young Finns Study Cohort (CRYF) \footfullcite{tikkanen_association_2011}.
+            \end{description}
+
+        \end{frame}
+
+\subsection{Sample}
+\begin{frame}{Sample}
+
+\begin{columns}[T] % align columns
+\begin{column}{.35\textwidth}
+\centering
+\includegraphics[scale=0.6]{santiago-map.png}
+\end{column}%
+\hfill%
+\begin{column}{.6\textwidth}
+
+\vspace{-1em}
+
+ \begin{itemize}\small{
+          \item 1,645 infants began SLCS between 1991-1996
+          \item \raggedright Current sample recruited from n=888, which were 2 of 3 randomized control trial groups
+          \item  n=677 with infancy and adolescent data and of those n=546 with genotyped data in analyses that follow
+          \item Low to middle income status in Chile.
+          \item Ancestrally mixed American Indian and Spanish descent families
+          \item Lipid traits measured after overnight fasting at mean age 17 years.}
+          \end{itemize}
+
+\end{column}%
+\end{columns}
+
+\end{frame}
+        
+
+% ------------------------------
+\section{Methods}
+
+\subsection{Methods}
+
+\begin{frame}{Methods}
+        
+        \begin{enumerate}[1.]
+          \item Test additive association between lipid traits and adequately powered single risk variants.
+            \begin{itemize}
+              \item 76 common \textbf{lipid variants} selected from a European genome-wide meta-analysis with strongest independent signal\footfullcite{buscot_combined_2016}.
+              \item Association tests include 6 \textbf{single variants} with \textit{a priori} power > 0.80.
+            \end{itemize}
+          \item Assess the association of weighted genetic risk scores (wGRS) on lipid traits using linear regression model.
+       \begin{itemize}
+           \item \textbf{Coefficients} for wGRS and power calculations based on European adult association studies\footfullcite{teslovich_biological_2010}.
+              \end{itemize}
+
+          \item Characterize proportion of variance explained by lipid variants.
+          \end{enumerate}
+\end{frame}
+
+\begin{frame}{Platform}
+
+\begin{itemize}
+  \item Multi-Ethnic Global Array (MEGA)
+  \item Imputation with 1000 Genomes Phase III Ad Mixed American (AMR) reference sample.
+  \end{itemize}
+\end{frame}
+
+% ------------------------------
+% TODO: add descriptive here
+
+\section{Results}
+
+% Read in code for rest of results
+        <<code1, echo=F>>=
+          read_chunk("../slides/tables-slides.R")
+        @
+
+
+\subsection{Figure 1}
+
+\begin{frame}{Sample descriptive statistics}
+
+        <<table1-1, results='hide'>>=
+        @
+        
+\resizebox{\linewidth}{!}{%
+        <<>>=
+          print(z, type="latex")
+        @
+        }
+        
+\end{frame}
+
+\begin{frame}{Four of the seven association tests were nominally statistically significant.}
+
+      
+        % First figure
+        % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+        % Point to code to make all tables from summary statistics run on Kure
+        % These figures were originally made for Dec 2016 presentation
+        
+
+        % Run code chunk from tables-slides.R to make table from summary statistics run on Kure
+
+        <<assoc-1, results='hide'>>=
+        @
+        
+        <<fig-assoc-1, results='hide'>>=
+        @
+
+\vskip-0.2em
+
+% NOTE: these were determined via power calculations at ~\Documents\dissertation\unc-dissertation-markdown\includes\scripts\power-calcs-ind-assoc.Rmd
+\centering
+
+          <<fig-assoc-2, fig.keep='last', fig.height=6, fig.width=12>>=
+          @
+          \small Figure 1. Candidate single variant tests of association by variant and sample
+
+\end{frame}
+% 
+% \subsection{Figure 1}
+% \begin{frame}{Results, Figure 1}
+% 
+%             \begin{itemize}
+%             \item \raggedright  Majority of single variants tested in Chilean sample have concordant direction of associations.
+%               \begin{itemize}
+%                 \item Two LDL-C variants in opposite direction.
+%                 \end{itemize}
+%               \end{itemize}
+% 
+% \end{frame}
+
+
+% ------------------------------
+
+
+\subsection{Figure 2}  
+\begin{frame}{wGRS has stronger association for each lipid outcome in Chilean versus Finnish sample except LDL-C.}
+        
+        % Second figure
+        % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vskip-1em
+\centering
+
+% Run code chunk from tables-slides.R to make table from summary statistics run on Kure
+
+        <<fig3-1, results='hide'>>=
+        @
+
+        <<fig3-2, results='hide', fig.keep='last', fig.height=8, fig.width=16>>=
+        @
+
+        
+        \begin{addmargin}[0.1cm]{0cm}
+        \begin{flushleft}
+        \footnotesize{*Coefficients represent change in outcome per 1 SD change in wGRS, adjusted for first five principal components representing ancestry.}
+        \end{flushleft}
+        \end{addmargin}
+    \small Figure 2. wGRS regression coefficients by sample and sex
+
+\end{frame}
+
+% \begin{frame}{Results, Figure 2}
+%         \begin{itemize}
+%             \item \raggedright  wGRS has stronger association for each lipid outcome in Chilean versus Finnish sample except LDL-C for females.
+%             \end{itemize}
+% 
+% \end{frame}
+
+% ------------------------------
+
+\begin{frame}{ LDL-C-related variants explain much less variance in Chilean sample.}
+        % Third figure
+        % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Run code chunk from tables-slides.R to make table from summary statistics run on Kure
+
+        <<fig2-1, results='hide'>>=
+        @
+        
+\vskip-0.5em
+        \centering
+        <<fig2-2poster, fig.keep='last', fig.height=11, fig.width=20>>=
+          @
+\small Figure 3. Proportion of lipid traits variance explained by lipid-related variants, by sex
+
+\end{frame}
+
+% \begin{frame}{Results, Figure 3}
+% %        \begin{mdframed}[style=MyFrame]
+%           \begin{itemize}
+%             \item \raggedright LDL-C-related variants explain much less variance in Chilean sample.
+%             \end{itemize}
+% %            \end{mdframed}
+%         
+% \end{frame}
+
+% ------------------------------
+\section{Summary}
+
+\begin{frame}{Summary}
+        
+          \begin{itemize}
+            \item This study provides evidence that genetic architecture underlying lipid traits in a Chilean cohort is similar to that previously found in a Finnish cohort.
+              \begin{itemize}
+                \item LDL-C traits are an exception.
+                \end{itemize}
+            
+            \end{itemize}
+  \end{frame}
+
+
+
+        % -----------------------------------------------------------
+        % 3-3
+        % -----------------------------------------------------------
+        % \begin{block}{References}
+        %   %\scriptsize{%          \printbibliography{}}
+        %   \scriptsize
+        %   (1) \fullcite{coram_genome-wide_2013} \\
+        %   (2) \fullcite{lozoff_behavioral_2003} \\
+        %   (3) \fullcite{tikkanen_association_2011} \\
+        %   (4) \fullcite{teslovich_biological_2010} \\
+        %   (5) \fullcite{buscot_combined_2016} \\
+        %   % see https://en.wikibooks.org/wiki/LaTeX/Fonts
+        % \end{block}
+
+\end{document}

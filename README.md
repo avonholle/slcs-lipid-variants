@@ -26,9 +26,10 @@ Steps:
 
 ## Analyses on Kure
 
-* My directory on Kure is  /proj/epi/CVDGeneNas/avonholle
-  - Steps to process [report](http://avonholle.github.io/ms-201608-1/analysis-summary.pdf) are
-    1. Run the file containing the commands to knit a .Rnw document: bsub R CMD BATCH make-summary.R &
+- [File making results](kure-analysis/analysis-summary.Rnw)
+
+- Steps to process [report](http://avonholle.github.io/ms-201608-1/analysis-summary.pdf) are
+    1. Run the [R file to knit a .Rnw document](kure-analysis/make-summary.R): bsub R CMD BATCH make-summary.R &
     2. Transfer the .tex file created in step 1 above, analysis-summary.tex, to a local drive at ~\Dropbox\unc.grad.school\my-papers\ms-201608-1\programs\kure-analysis\tex\ to run on TeXWorks or TeXnicCenter programs.
       - NOTE: before you run the .tex file add, \usepackage{booktabs}, before the \begin{document} command line. Otherwise the .tex file will not run in these programs.
       - Also, use 'LaTex -> PDF' for compiling analysis-summary.tex file.

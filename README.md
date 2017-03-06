@@ -1,5 +1,4 @@
-# Repo titled "slcs-lipid-variants"
-Lipid-related Genetic Variants and Lipid Outcomes in a Cohort of Chilean Children
+# Analytic work for project titled, "Lipid-related Genetic Variants and Lipid Outcomes in a Cohort of Chilean Children" 
 
 ## Statistical Analysis Plan
 
